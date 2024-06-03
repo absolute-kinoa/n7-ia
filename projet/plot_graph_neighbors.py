@@ -101,7 +101,6 @@ def CreateNeighbors(Swarm, Range=MAX_RANGE):
           node_i.add_neighbor(node_j)
           node_j.add_neighbor(node_i)
 
-
 print("### Génération des tableaux de nodes en fonction du temps ### ")
 def GetPositions(): 
   Positions = {}
@@ -121,74 +120,49 @@ def InitSwarms(Positions):
     temps = temps+1
   return Swarms
 
-chosen_range=MAX_RANGE
+chosen_range=MIN_RANGE
 Swarms = InitSwarms(Positions)
 CreateNeighbors(Swarms, chosen_range)
+
+def getBiggestSubset(swarm):
+  max_index,max_nodes = 0,swarm[0]
+  for k,v in swarm.items():
+    if v.get_size() > max_nodes.get_size():
+      max_nodes = v
+      max_index = k
+
+  print(max_index)
+  return swarm[max_index]
+
+
+fireSwarm_0 = Swarms[0].ForestFire()
+Max_fireSwarm_0 = getBiggestSubset(fireSwarm_0)
+fireSwarm_1 = Swarms[int(MAXTEMPS/2)].ForestFire()
+Max_fireSwarm_1 = getBiggestSubset(fireSwarm_1)
+fireSwarm_2 = Swarms[MAXTEMPS-1].ForestFire()
+Max_fireSwarm_2 = getBiggestSubset(fireSwarm_2)
+
+# for k in fireSwarm.keys():
+#   print(str(k) + " ->" + str(fireSwarm[k]))
 
 
 print("=============================")
 print("Showcasing Neighbor Graph")
 print("=============================")
 
-# Animation setup
-# metadata = dict(title='Swarm Evolution', artist='Eric YU')
-# writer = FFMpegWriter(fps=10, metadata=metadata)
-
-# Initialize lists to store maximum coordinates
-
-# x_list = []
-# y_list = []
-# z_list = []
-
-# for i in range(len(Swarms)):
-#   for n in Swarms[i].nodes:
-#     x_list.append(n.x)
-#     y_list.append(n.y)
-#     z_list.append(n.z)
-
-# x_max = np.max(x_list)
-# y_max = np.max(y_list)
-# z_max = np.max(z_list)
-# x_min = np.min(x_list)
-# y_min = np.min(y_list)
-# z_min = np.min(z_list)
-
-
-# Placeholder for generating swarm data over time (this should be replaced with your actual data)
-
 fig = plt.figure(figsize=(20,20))
-ax0=Swarms[0].plot_edges(fig,221,time=0, range=chosen_range)
-ax1=Swarms[int(MAXTEMPS/2)].plot_edges(fig, 222,time=50, range=chosen_range)
-ax3=Swarms[MAXTEMPS-1].plot_edges(fig, 212,time=99, range=chosen_range)
+
+
+# Using date = 0
+# ax0=Swarms[0].plot_edges(fig,221,time=0, range=chosen_range)
+# ax0=Max_fireSwarm_0.plot_edges(fig,222,time=0, range=chosen_range)
+
+# Using date = half
+ax1=Swarms[int(MAXTEMPS/2)].plot_edges(fig, 221,time=50, range=chosen_range)
+ax1=Max_fireSwarm_1.plot_edges(fig, 222,time=50, range=chosen_range)
+
+# Using date = max
+# ax3=Swarms[MAXTEMPS-1].plot_edges(fig, 212,time=99, range=chosen_range)
+# ax3=Max_fireSwarm_2.plot_edges(fig, 222,time=99, range=chosen_range)
+
 plt.show()
-
-# Generating random positions for the sake of demonstration
-# with writer.saving(fig, "swarm_connectivity_evolution.mp4", MAXTEMPS):
-#     for i in range(len(Swarms)):
-#         nodes = []
-#         print(i)
-#         nodes = Swarms[i].nodes
-#         x_data = [node.x for node in nodes]
-#         y_data = [node.y for node in nodes]
-#         z_data = [node.z for node in nodes]
-        
-#         # Settings limits to the graph
-#         # ax.set_xlim(x_min,x_max)
-#         # ax.set_ylim(y_min,y_max)
-#         # ax.set_zlim(z_min,z_max)
-
-#         # Plot the grapb
-#         ax.scatter(x_data, y_data, z_data, c="blue", s=50)
-#         ax.plot([0,0],[0, 0],[0, 0], color='red', markersize=50000) # Origin
-#         for node in nodes:
-#             for n in node.neighbors:
-#                 if n in nodes:
-#                     ax.plot([node.x, n.x], [node.y, n.y], [node.z, n.z], c="grey")
-#         plt.show()
-#         writer.grab_frame()
-#         ax.clear()
-#         plt.cla()
-
-# print("Animation created and saved as 'swarm_evolution.mp4'")
-# print("=============================")
-

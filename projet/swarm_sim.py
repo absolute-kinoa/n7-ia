@@ -237,7 +237,17 @@ class Swarm:
         nb_nodes = len(self.nodes)
         return f"Swarm of {nb_nodes} node(s), connection range: {self.connection_range}"
     
+    
     #*************** Common operations ***************
+    def get_size(self):
+        return len(self.nodes)
+    
+    def get_node_ids(self):
+        ids = []
+        for n in self.nodes:
+            ids.append(n.id)
+        return ids
+
     def add_node(self, node:Node):
         """
         Function to add a node to the swarm unless it is already in.
@@ -675,6 +685,8 @@ class Swarm:
         Function to create a 3D-plot of the swarm connectivity at a given timestamp.
 
         Args:
+            fig : figure used to draw the plot.
+            where (int): Coordinates to place the graph on the figure
             n_color (str, optional): Nodes color. Defaults to 'blue'.
             e_color (str, optional): Edges color. Defaults to 'gray'.
         """
