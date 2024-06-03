@@ -109,9 +109,9 @@ def InitSwarms(Positions):
 
 Swarms = InitSwarms(Positions)
 
-print("=============================")
-print("Generating video")
-print("=============================")
+print("===============================")
+print("Generating video for Swarm Graph")
+print("===============================")
 
 # Animation setup
 metadata = dict(title='Swarm Evolution', artist='Eric YU')
@@ -141,16 +141,13 @@ z_min = np.min(z_list)
 
 
 # Placeholder for generating swarm data over time (this should be replaced with your actual data)
-MAXTEMPS = 100
-Swarms[0].plot_edges()
-
-
 # Generating random positions for the sake of demonstration
 with writer.saving(fig, "swarm_evolution.mp4", MAXTEMPS):
     for i in range(len(Swarms)):
         nodes = []
         print(i)
         nodes = Swarms[i].nodes
+        # nodes2 = 
         x_data_genuine = [node.x for node in nodes]
         y_data_genuine = [node.y for node in nodes]
         z_data_genuine = [node.z for node in nodes]
@@ -169,4 +166,3 @@ with writer.saving(fig, "swarm_evolution.mp4", MAXTEMPS):
 
 print("Animation created and saved as 'swarm_evolution.mp4'")
 print("=============================")
-

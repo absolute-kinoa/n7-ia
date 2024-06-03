@@ -195,8 +195,10 @@ def topCentrality(Swarm, Matrix, NumberOfNode):
 
   return idNoeud
 
-#testTopCentrality = topCentrality(Swarms[7], Matrixes[7])
-#print("Noeud top centralité : ", testTopCentrality)
+# print("===========================")
+# testTopCentrality = topCentrality(Swarms[7], Matrixes[7],len(Swarms[7].nodes))
+# print("Noeud top centralité : ", testTopCentrality)
+# print("===========================")
 
 def GetClusterCoeffByNode(Swarm):
   return Swarm.cluster_coef()
