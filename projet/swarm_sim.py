@@ -103,7 +103,9 @@ class Node:
         """
         self.group = c
     
-     
+    def get_group(self):
+        return self.group
+
     #*********** Metrics ***************   
     def cluster_coef(self):
         """
@@ -242,6 +244,13 @@ class Swarm:
     def get_size(self):
         return len(self.nodes)
     
+    def get_group(self, id):
+        group_list = list()
+        for n in self.nodes:
+            if n.get_group() == id :
+                group_list.append(n)
+        return group_list
+
     def get_node_ids(self):
         ids = []
         for n in self.nodes:

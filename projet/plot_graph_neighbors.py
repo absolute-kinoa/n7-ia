@@ -6,7 +6,7 @@ from swarm_sim import *
 import networkx as nx
 import random
 from matplotlib.widgets import Slider
-
+import copy
 
 # Chemin vers le fichier source des donnes
 PATH = './output50.csv'
@@ -126,6 +126,9 @@ def InitSwarms(Positions):
 
 Swarms = InitSwarms(Positions)
 CreateNeighbors(Swarms, chosen_range)
+print(Swarms[0].get_node_by_id(0))
+
+Swarms_copy=copy.deepcopy(Swarms)
 
 def getBiggestSubset(swarm):
   max_index,max_nodes = 0,swarm[0]
@@ -146,20 +149,15 @@ def generateFireSwarms(swarms):
     s_list.append(getBiggestSubset(fire_swarm))
   return s_list
 
-def generateRNS(swarms):
-  s_list = list()
-  for i in range(len(swarms)):
-    fire_swarm = swarms[i].ForestFire()
-    s_list.append(getBiggestSubset(fire_swarm))
-  return s_list
-
-max_fireswarms =  generateFireSwarms(Swarms)# Init fireswarm
-# max_rns = generateRNS(Swarms)
 
 # Display fireSwarm contents
 def displayFSwarmContent(fireSwarm):
   for k in fireSwarm.keys():
     print(str(k) + " ->" + str(fireSwarm[k]))
+
+fireswarms = Swarms[i].ForestFire()
+displayFSwarmContent(fireswarms)
+max_fireswarms =  generateFireSwarms(Swarms_copy) # Init fireswarm
 
 
 print("=============================")
@@ -186,10 +184,20 @@ t_slider = Slider(
           valstep=int(MAXTEMPS/2))
 
 def update(val):
+    # print()
+    # print("=================================================")
+    # print("UPDATING FOR TIME : " + str(val))
     time_val = int(val)
     Swarms[time_val].plot_edges(ax0, time=time_val, range=-1, title="Regular graph")
     max_fireswarms[time_val].plot_edges(ax1, time=time_val, range=-1, title="Forestfire graph")
+    temp_id = (max_fireswarms[0].get_node_ids()[0])
+    group_id = max_fireswarms[0].get_node_by_id(temp_id).get_group()
+    # group = max_fireswarms
+
+    # print("id =" + str(group_id))
     fig.canvas.draw_idle()
+    # print("value for swarm: " + Swarms[time_val].shortest_path_prompt(-1))
+    # print("value for subswarm: " + max_fireswarms[time_val].shortest_path_prompt(group_id))
 
 update(0)
 t_slider.on_changed(update)
