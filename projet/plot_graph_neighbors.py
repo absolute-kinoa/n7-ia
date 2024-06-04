@@ -134,21 +134,32 @@ def getBiggestSubset(swarm):
       max_nodes = v
       max_index = k
 
-  print(max_index)
+  # print(max_index)
   return swarm[max_index]
 
-# max_fireswarms = []
-# def generateFireSwarms(swarms):
-#   for i in range(len(swarms)):
-#     fire_swarm = swarms[0].ForestFire()
-#     max_fireswarms[i] = getBiggestSubset(fire_swarm)
 
-fireSwarm_0 = Swarms[0].ForestFire()
-Max_fireSwarm_0 = getBiggestSubset(fireSwarm_0)
+# Generate fireswarm
+def generateFireSwarms(swarms):
+  s_list = list()
+  for i in range(len(swarms)):
+    fire_swarm = swarms[i].ForestFire()
+    s_list.append(getBiggestSubset(fire_swarm))
+  return s_list
+
+def generateRNS(swarms):
+  s_list = list()
+  for i in range(len(swarms)):
+    fire_swarm = swarms[i].ForestFire()
+    s_list.append(getBiggestSubset(fire_swarm))
+  return s_list
+
+max_fireswarms =  generateFireSwarms(Swarms)# Init fireswarm
+# max_rns = generateRNS(Swarms)
 
 # Display fireSwarm contents
-# for k in fireSwarm.keys():
-#   print(str(k) + " ->" + str(fireSwarm[k]))
+def displayFSwarmContent(fireSwarm):
+  for k in fireSwarm.keys():
+    print(str(k) + " ->" + str(fireSwarm[k]))
 
 
 print("=============================")
@@ -157,23 +168,9 @@ print("=============================")
 
 fig = plt.figure(figsize=(20,20))
 
-
 # Add subplots to the figure
 ax0 = fig.add_subplot(221, projection='3d')
 ax1 = fig.add_subplot(222, projection='3d')
-
-# Initial plot using date = 0
-Swarms[0].plot_edges(ax0, time=0, range=-1)
-Max_fireSwarm_0.plot_edges(ax1, time=0, range=-1)
-
-
-# Using date = half
-# ax1=Swarms[int(MAXTEMPS/2)].plot_edges(fig, 221,time=50, range=chosen_range, title="Regular graph")
-# ax1=Max_fireSwarm_1.plot_edges(fig, 222,time=50, range=chosen_range, title= "Forestfire graph")
-
-# Using date = max
-# ax3=Swarms[MAXTEMPS-1].plot_edges(fig, 212,time=99, range=chosen_range)
-# ax3=Max_fireSwarm_2.plot_edges(fig, 222,time=99, range=chosen_range)
 
 # =====================
 # Creation du Slider
@@ -191,8 +188,9 @@ t_slider = Slider(
 def update(val):
     time_val = int(val)
     Swarms[time_val].plot_edges(ax0, time=time_val, range=-1, title="Regular graph")
-    Max_fireSwarm_0.plot_edges(ax1, time=time_val, range=-1, title="Forestfire graph")
+    max_fireswarms[time_val].plot_edges(ax1, time=time_val, range=-1, title="Forestfire graph")
     fig.canvas.draw_idle()
-  
+
+update(0)
 t_slider.on_changed(update)
 plt.show()
