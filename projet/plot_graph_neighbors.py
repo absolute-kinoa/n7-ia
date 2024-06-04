@@ -5,16 +5,20 @@ from dataclasses import dataclass
 from swarm_sim import *
 import networkx as nx
 import random
-from matplotlib.animation import FFMpegWriter
+from matplotlib.widgets import Slider
+
 
 # Chemin vers le fichier source des donnes
-PATH = './Traces.csv'
+PATH = './output50.csv'
 # Nombre de temps a analyser
 MAXTEMPS = 100
 # Constantes de distance
-MAX_RANGE = 60000
-MID_RANGE = 40000
-MIN_RANGE = 20000
+MAX_RANGE = 60
+MID_RANGE = 30
+MIN_RANGE = 20
+
+satellites_nb=50
+chosen_range=MIN_RANGE
 
 ###
 ### Manipulation du fichier source.
@@ -27,7 +31,7 @@ print("### Reformatage des données : ajout d'un index sur le temps ### ")
 #On genere un tableau qui servira d'index de temps pour chaque echantillon
 names = ['1']
 i=2
-while len(names)<10000 :
+while len(names)<11603 :
   names.append(''+ str(i))
   i=i+1
 
@@ -41,7 +45,7 @@ print("### Reformatage des données : ajout d'un index sur les satelites ### ")
 # On genere les noms des satelite 
 satnames = ['satx1']
 i=1
-while len(satnames)<300 :
+while len(satnames)<(3*satellites_nb) :
   if (i !=1):
     satnames.append('satx'+ str(i))
   satnames.append('saty'+ str(i))
@@ -63,7 +67,7 @@ dft = df.transpose()
 def GetNodes(time):
   nodes = {}
   id = 1
-  while id < 101:
+  while id < (satellites_nb+1):
     node = Node(id - 1, dft.loc[str(time)]['satx'+str(id)], dft.loc[str(time)]['saty'+str(id)], dft.loc[str(time)]['satz'+str(id)])
     nodes[id - 1] = node
     id = id +1
@@ -120,7 +124,6 @@ def InitSwarms(Positions):
     temps = temps+1
   return Swarms
 
-chosen_range=MIN_RANGE
 Swarms = InitSwarms(Positions)
 CreateNeighbors(Swarms, chosen_range)
 
@@ -134,14 +137,16 @@ def getBiggestSubset(swarm):
   print(max_index)
   return swarm[max_index]
 
+# max_fireswarms = []
+# def generateFireSwarms(swarms):
+#   for i in range(len(swarms)):
+#     fire_swarm = swarms[0].ForestFire()
+#     max_fireswarms[i] = getBiggestSubset(fire_swarm)
 
 fireSwarm_0 = Swarms[0].ForestFire()
 Max_fireSwarm_0 = getBiggestSubset(fireSwarm_0)
-fireSwarm_1 = Swarms[int(MAXTEMPS/2)].ForestFire()
-Max_fireSwarm_1 = getBiggestSubset(fireSwarm_1)
-fireSwarm_2 = Swarms[MAXTEMPS-1].ForestFire()
-Max_fireSwarm_2 = getBiggestSubset(fireSwarm_2)
 
+# Display fireSwarm contents
 # for k in fireSwarm.keys():
 #   print(str(k) + " ->" + str(fireSwarm[k]))
 
@@ -153,16 +158,41 @@ print("=============================")
 fig = plt.figure(figsize=(20,20))
 
 
-# Using date = 0
-# ax0=Swarms[0].plot_edges(fig,221,time=0, range=chosen_range)
-# ax0=Max_fireSwarm_0.plot_edges(fig,222,time=0, range=chosen_range)
+# Add subplots to the figure
+ax0 = fig.add_subplot(221, projection='3d')
+ax1 = fig.add_subplot(222, projection='3d')
+
+# Initial plot using date = 0
+Swarms[0].plot_edges(ax0, time=0, range=-1)
+Max_fireSwarm_0.plot_edges(ax1, time=0, range=-1)
+
 
 # Using date = half
-ax1=Swarms[int(MAXTEMPS/2)].plot_edges(fig, 221,time=50, range=chosen_range)
-ax1=Max_fireSwarm_1.plot_edges(fig, 222,time=50, range=chosen_range)
+# ax1=Swarms[int(MAXTEMPS/2)].plot_edges(fig, 221,time=50, range=chosen_range, title="Regular graph")
+# ax1=Max_fireSwarm_1.plot_edges(fig, 222,time=50, range=chosen_range, title= "Forestfire graph")
 
 # Using date = max
 # ax3=Swarms[MAXTEMPS-1].plot_edges(fig, 212,time=99, range=chosen_range)
 # ax3=Max_fireSwarm_2.plot_edges(fig, 222,time=99, range=chosen_range)
 
+# =====================
+# Creation du Slider
+# # =====================
+axtime = fig.add_axes([0.25, 0.1, 0.65, 0.03])
+t_slider = Slider(
+          ax=axtime,
+          label="Time (in seconds)",
+          valmin=0,
+          valmax=MAXTEMPS-1,
+          valinit=0,
+          orientation="horizontal",
+          valstep=int(MAXTEMPS/2))
+
+def update(val):
+    time_val = int(val)
+    Swarms[time_val].plot_edges(ax0, time=time_val, range=-1, title="Regular graph")
+    Max_fireSwarm_0.plot_edges(ax1, time=time_val, range=-1, title="Forestfire graph")
+    fig.canvas.draw_idle()
+  
+t_slider.on_changed(update)
 plt.show()

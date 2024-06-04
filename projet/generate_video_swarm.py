@@ -140,22 +140,15 @@ y_min = np.min(y_list)
 z_min = np.min(z_list)
 
 
-# Placeholder for generating swarm data over time (this should be replaced with your actual data)
-# Generating random positions for the sake of demonstration
 with writer.saving(fig, "swarm_evolution.mp4", MAXTEMPS):
     for i in range(len(Swarms)):
         nodes = []
         print(i)
         nodes = Swarms[i].nodes
-        # nodes2 = 
         x_data_genuine = [node.x for node in nodes]
         y_data_genuine = [node.y for node in nodes]
         z_data_genuine = [node.z for node in nodes]
-        # mod_x = [node.x for node in nodes2]
-        # mod_y = [node.y for node in nodes2]
-        # mod_z = [node.z for node in nodes2]
         ax.scatter(x_data_genuine, y_data_genuine, z_data_genuine, c="blue", s=50)
-        # ax.scatter([x for x in mod_x if x not in x_data_genuine ], [y for y in mod_y if y not in y_data_genuine ], [z for z in mod_z if z not in z_data_genuine ], color="red", s=50)
         ax.plot([0,0],[0, 0],[0, 0], color='red', markersize=50000) # Origin
         ax.set_xlim(x_min,x_max)
         ax.set_ylim(y_min,y_max)

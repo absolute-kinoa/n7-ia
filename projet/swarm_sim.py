@@ -680,7 +680,7 @@ class Swarm:
         ax.plot([0,0],[0, 0],[0, 0], color='red', markersize=50000) # Origin
         plt.show()
     
-    def plot_edges(self, fig, where, n_color='blue', e_color='gray', time=-1,range=-1):
+    def plot_edges(self,ax, n_color='blue', e_color='gray', time=-1,range=-1, title=""):
         """
         Function to create a 3D-plot of the swarm connectivity at a given timestamp.
 
@@ -690,11 +690,14 @@ class Swarm:
             n_color (str, optional): Nodes color. Defaults to 'blue'.
             e_color (str, optional): Edges color. Defaults to 'gray'.
         """
-        ax = fig.add_subplot(where,projection='3d')
-        if( time == -1 and range ==-1):
-            plt.title("the swarm's node connectivity")
+        ax.clear()
+        if title:
+            ax.set_title(title)
+        elif time == -1 and range == -1:
+            ax.set_title("The swarm's node connectivity")
         else:
-            plt.title("the swarm's node connectivity at timestamp "+str(time)+" and range "+str(range))
+            ax.set_title(f"The swarm's node connectivity at timestamp {time} and range {range}")
+        
         x_data = [node.x for node in self.nodes]
         y_data = [node.y for node in self.nodes]
         z_data = [node.z for node in self.nodes]
@@ -703,4 +706,3 @@ class Swarm:
             for n in node.neighbors:
                 if n in self.nodes:
                     ax.plot([node.x, n.x], [node.y, n.y], [node.z, n.z], c=e_color)
-        return ax        
